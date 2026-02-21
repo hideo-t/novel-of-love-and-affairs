@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>もし浮気がなければ恋愛小説はなかった</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: #1a1a2e;
+      --text-primary: #e0ddd5;
+      --text-secondary: #8a8a9a;
+      --accent: #4a9eff;
+      --accent-dim: #2a5a9a;
+      --gold: #c4a35a;
+      --chapter-border: #2a2a3e;
+      --serif: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+      --sans: 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--serif);
+      font-size: 17px;
+      line-height: 1.95;
+      min-height: 100vh;
+    }
+
+    /* ─── Header ─── */
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 100px 20px 80px;
+      background: linear-gradient(180deg, #1a2a4a 0%, #0f1a2f 100%);
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 30%, rgba(120,180,255,0.15) 0%, transparent 70%);
+    }
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 5vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #ffffff;
+      text-shadow: 0 2px 20px rgba(100,160,255,0.3);
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .hero-sub {
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      color: #b0c4de;
+      letter-spacing: 0.15em;
+    }
+    .hero-line {
+      width: 60px; height: 1px;
+      background: var(--gold);
+      margin: 28px auto 0;
+    }
+
+    /* ─── Digest Carousel ─── */
+    .carousel-wrap {
+      background: linear-gradient(180deg, #0f1a2f 0%, #0a0e18 100%);
+      padding: 24px 0 20px;
+      overflow: hidden;
+    }
+    .carousel-track {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 calc((100vw - min(85vw, 600px)) / 2);
+      scrollbar-width: none;
+    }
+    .carousel-track::-webkit-scrollbar { display: none; }
+    .carousel-slide {
+      flex: 0 0 min(85vw, 280px);
+      scroll-snap-align: center;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      transition: transform 0.2s;
+      aspect-ratio: 3/2;
+    }
+    .carousel-slide:active { transform: scale(0.97); }
+    .carousel-slide img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .carousel-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      padding: 28px 12px 10px;
+      color: #fff;
+      font-size: 0.85rem;
+      font-family: var(--serif);
+      line-height: 1.4;
+    }
+    .carousel-ch {
+      display: inline-block;
+      font-size: 0.7rem;
+      color: var(--gold);
+      margin-right: 6px;
+      font-family: var(--sans);
+      letter-spacing: 0.06em;
+    }
+    .carousel-dots {
+      text-align: center;
+      padding-top: 12px;
+    }
+    .carousel-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      margin: 0 4px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .carousel-dot.active {
+      background: var(--gold);
+      transform: scale(1.3);
+    }
+    @media (min-width: 600px) {
+      .carousel-slide { flex: 0 0 280px; }
+      .carousel-track { padding: 0 calc((100vw - 900px) / 2); gap: 18px; }
+    }
+
+    /* ─── Navigation ─── */
+    .nav-bar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,15,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--chapter-border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      overflow-x: auto;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+    }
+    .nav-bar .nav-title {
+      color: var(--gold);
+      font-weight: 700;
+      white-space: nowrap;
+      margin-right: 8px;
+    }
+    .nav-bar a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      white-space: nowrap;
+      padding: 4px 10px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .nav-bar a:hover {
+      color: var(--accent);
+      background: rgba(74,158,255,0.1);
+    }
+
+    /* ─── TOC ─── */
+    .toc {
+      max-width: 700px;
+      margin: 60px auto 40px;
+      padding: 0 20px;
+    }
+    .toc h3 {
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .toc-item {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 18px;
+      color: var(--text-primary);
+      text-decoration: none;
+      border-left: 2px solid var(--chapter-border);
+      transition: all 0.25s;
+      font-family: var(--sans);
+      font-size: 0.95rem;
+    }
+    .toc-item:hover {
+      border-color: var(--accent);
+      background: rgba(74,158,255,0.04);
+      padding-left: 24px;
+    }
+    .toc-num {
+      font-size: 0.75rem;
+      color: var(--accent-dim);
+      font-weight: 700;
+      min-width: 20px;
+    }
+
+    /* ─── Characters ─── */
+    .characters {
+      max-width: 700px;
+      margin: 40px auto 60px;
+      padding: 0 20px;
+    }
+    .characters h3 {
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+    .char-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .char-card {
+      background: var(--bg-card);
+      border: 1px solid var(--chapter-border);
+      border-radius: 8px;
+      padding: 18px;
+    }
+    .char-name {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .char-meta {
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      color: var(--accent);
+      margin-bottom: 8px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .char-meta span {
+      background: rgba(74,158,255,0.1);
+      padding: 1px 8px;
+      border-radius: 4px;
+    }
+    .char-appearance {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 6px;
+      border-left: 2px solid var(--chapter-border);
+      padding-left: 10px;
+    }
+    .char-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ─── Divider ─── */
+    .section-divider {
+      width: 40px; height: 1px;
+      background: var(--chapter-border);
+      margin: 0 auto;
+    }
+
+    /* ─── Chapter ─── */
+    .chapter {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 80px 20px;
+      border-top: 1px solid var(--chapter-border);
+    }
+    .chapter-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .chapter-number {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--accent-dim);
+      display: block;
+      margin-bottom: 8px;
+    }
+    .chapter-title {
+      font-family: var(--serif);
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .chapter-image {
+      margin: 0 -20px 40px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--chapter-border);
+    }
+    .chapter-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      opacity: 0.92;
+    }
+    .chapter-body p {
+      margin-bottom: 1.2em;
+      text-indent: 1em;
+      text-align: justify;
+    }
+    .chapter-body p:empty {
+      display: none;
+    }
+
+    /* ─── Footer ─── */
+    .footer {
+      text-align: center;
+      padding: 60px 20px;
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      border-top: 1px solid var(--chapter-border);
+    }
+
+    /* ─── Reading mode toggle ─── */
+    .mode-toggle {
+      position: fixed; bottom: 20px; right: 20px; z-index: 200;
+      background: var(--bg-card);
+      border: 1px solid var(--chapter-border);
+      color: var(--text-secondary);
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+
+    /* --- TTS Read Aloud --- */
+    .tts-fab {
+      position: fixed; bottom: 80px; right: 20px; z-index: 200;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--accent); color: #fff; border: none;
+      font-size: 22px; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      transition: all 0.3s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tts-fab:hover { transform: scale(1.1); }
+    .tts-fab.speaking { background: #e74c3c; animation: tts-pulse 1.5s infinite; }
+    @keyframes tts-pulse {
+      0%,100% { box-shadow: 0 4px 16px rgba(231,76,60,0.4); }
+      50% { box-shadow: 0 4px 24px rgba(231,76,60,0.7); }
+    }
+    .tts-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+      background: rgba(20,20,30,0.95); backdrop-filter: blur(12px);
+      border-top: 1px solid var(--chapter-border);
+      padding: 10px 16px; display: none;
+      align-items: center; gap: 10px;
+      font-family: var(--sans); font-size: 0.85rem;
+    }
+    .tts-bar.active { display: flex; flex-wrap: wrap; }
+    .tts-bar button {
+      background: none; border: 1px solid var(--text-secondary);
+      color: var(--text-primary); border-radius: 6px;
+      padding: 6px 12px; cursor: pointer; font-size: 0.8rem;
+      white-space: nowrap; transition: all 0.2s;
+    }
+    .tts-bar button:hover { border-color: var(--accent); color: var(--accent); }
+    .tts-bar .tts-info {
+      flex: 1; color: var(--text-secondary);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      min-width: 80px;
+    }
+    .tts-bar .tts-speed {
+      display: flex; align-items: center; gap: 4px;
+      color: var(--text-secondary); font-size: 0.75rem;
+    }
+    .tts-bar .tts-speed input { width: 60px; accent-color: var(--accent); }
+    body.light .tts-bar {
+      background: rgba(245,245,240,0.95); border-top-color: #ddd;
+    }
+    body.light .tts-bar button { border-color: #999; color: #333; }
+    body.light .tts-bar .tts-info { color: #666; }
+
+    /* ─── Light mode ─── */
+    body.light {
+      --bg-primary: #f5f0e8;
+      --bg-secondary: #ebe5d9;
+      --bg-card: #fff;
+      --text-primary: #2a2a2a;
+      --text-secondary: #6a6a6a;
+      --chapter-border: #d5cfc3;
+      --accent: #2563eb;
+      --accent-dim: #6b9eff;
+      --gold: #8a6d2b;
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 600px) {
+      body { font-size: 15px; }
+      .chapter { padding: 50px 16px; }
+    }
+
+    /* ─── Scroll progress ─── */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; z-index: 200;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
+      width: 0%;
+      transition: width 0.1s;
+    }
+  </style>
+</head>
+<body>
+  <div class="scroll-progress" id="progress"></div>
+
+  <header class="hero">
+    <h1 class="hero-title">もし浮気がなければ恋愛小説はなかった</h1>
+    <p class="hero-sub">GENERATED WITH LOCAL AI — OLLAMA + STABLE DIFFUSION</p>
+    <div class="hero-line"></div>
+  </header>
+
+  <nav class="nav-bar">
+    <span class="nav-title">目次</span>
+    <a href="#chapter-1">第1章</a><a href="#chapter-2">第2章</a><a href="#chapter-3">第3章</a><a href="#chapter-4">第4章</a><a href="#chapter-5">第5章</a><a href="#chapter-6">第6章</a>
+  </nav>
+
+  <div class="toc">
+    <h3>— 目次 —</h3>
+        <a href="#chapter-1" class="toc-item"><span class="toc-num">1</span><span class="toc-label">恋愛小説の不在</span></a>
+        <a href="#chapter-2" class="toc-item"><span class="toc-num">2</span><span class="toc-label">人々の感情の欠如</span></a>
+        <a href="#chapter-3" class="toc-item"><span class="toc-num">3</span><span class="toc-label">音楽と恋愛の連携</span></a>
+        <a href="#chapter-4" class="toc-item"><span class="toc-num">4</span><span class="toc-label">映画と小説の欠如</span></a>
+        <a href="#chapter-5" class="toc-item"><span class="toc-num">5</span><span class="toc-label">浮気と文学の結びつき</span></a>
+        <a href="#chapter-6" class="toc-item"><span class="toc-num">6</span><span class="toc-label">忌まわしい過去からの解放</span></a>
+  </div>
+
+  <div class="characters">
+    <h3>— 登場人物 —</h3>
+    <div class="char-grid">
+      <div class="char-card">
+        <div class="char-name">青木和也</div>
+        <div class="char-meta"><span>主人公</span><span>25歳</span></div>
+        <div class="char-appearance">青木は平均的な外見で、黒髪を短く切り揃えている。彼の目はいつも何かを探し求めるように光っている。</div>
+        <div class="char-desc">好奇心が強く、世界の違和感に気づく人物</div>
+      </div>
+      <div class="char-card">
+        <div class="char-name">佐藤美咲</div>
+        <div class="char-meta"><span>サブキャラ</span><span>30歳</span></div>
+        <div class="char-appearance">佐藤は清楚な外見で、長めの黒髪を肩先まで伸ばしている。彼女はいつも上品な紺色のブラウスとタイトスカートを着ている。</div>
+        <div class="char-desc">優しくて知的な女性</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <main>
+
+    <section class="chapter" id="chapter-1">
+      <div class="chapter-header">
+        <span class="chapter-number">第1章</span>
+        <h2 class="chapter-title">恋愛小説の不在</h2>
+      </div>
+      
+      <div class="chapter-body">
+        <p>第1章　恋愛小説の不在</p>
+
+        <p>雨粒が窓ガラスに刻まれる音。図書館の中には、静けさと紙の匂いだけがあった。青木はカーテンを開けるようにして通路を進み、文学コーナーへ向かった。</p>
+
+        <p>棚を見渡すと、目当てのはずの位置が空いていた。</p>
+        <p>「どうしたんだろう？」</p>
+        <p>彼は首を傾げた。</p>
+
+        <p>隣に並んでいた実用的なビジネス本や技術書。それらの背表紙には、真剣な表情の人間写真が載っている。対照的に、青木と向き合っていたはずの恋愛小説はどこへ行ってしまったのか。</p>
+        <p>「ここには以前まで…」</p>
+
+        <p>手に取った一冊を閉じる音だけが響く。</p>
+
+        <p>棚から離れると、図書館内の静けさがさらに広がっていった。団体で訪れる時間帯でもなく、彼一人きりのようだった。</p>
+        <p>青木は背伸びをして空を見上げた。薄曇った冬の空に赤褐色の夕陽が沈みかけていた。</p>
+
+        <p>「恋愛小説は…」</p>
+
+        <p>もう一度書架を眺めた。隙間風で静かに揺れる紙製のカバーたち、それらの中に溶け込んだ彼自身。</p>
+        <p>青木は立ち尽くすまま、頭の中で物語を探した。</p>
+        <p>しかし、ただ空虚な空間だけが広がる。</p>
+
+        <p>「どこへいった？」</p>
+
+        <p>図書館員を呼び出す。少し遠慮気味に声を発する。</p>
+        <p>「失礼します…」</p>
+        <p>窓から外を見ると、雨粒は細かく降り続いている。水たまりの水面には灯りが映っていた。</p>
+        <p>青木は再び廊下に戻った。</p>
+
+        <p>この場所で見つけられなかった感情たち。</p>
+        <p>彼らと向き合うためだけにここへ来たはずだったのに…その存在すら確かではない、風化してしまった記憶の中で迷子になる。図書館の静寂が彼を包み込むように感じた。</p>
+        <p>「いつから…」</p>
+
+        <p>雨粒が音楽のように耳元で奏でられる。</p>
+
+        <p>青木は出口を見つめたまま立ち尽くしていた。</p>
+        <p>その先には街、そして人々が住む場所があった。</p>
+        <p>「どうしたら…」</p>
+        <p>どこまでも広がる灰色の水平線。彼が踏み出すべき道とは何か？</p>
+
+        <p>図書館の中では静寂が絶えず続いているだけだった。</p>
+
+        <p>雨粒が窓ガラスを打つ音、そして青木の足音。</p>
+        <p>その繰り返しはどこまでも続いていくように見えた。</p>
+      </div>
+    </section>
+    <section class="chapter" id="chapter-2">
+      <div class="chapter-header">
+        <span class="chapter-number">第2章</span>
+        <h2 class="chapter-title">人々の感情の欠如</h2>
+      </div>
+      
+      <div class="chapter-body">
+        <p>第2章　人々の感情の欠如</p>
+
+        <p>秋の夕暮れ、薄曇り。カフェの中は落ち着いた色合いに包まれていた。窓から漏れるぼんやりとした光がテーブルと椅子を作っている影に柔らかな輪郭を描く。青木は店員と共に注文を取り、静かにお茶を淹れてくる音だけが店内で繰り返される。</p>
+
+        <p>佐藤の隣に座る。彼女も同じような表情をしているように見えた。</p>
+        <p>「今日も忙しい日だった？」と淡々とした声色で尋ねた。</p>
+        <p>佐藤は微笑んだ。「まあ、いつも通りだな」</p>
+        <p>沈黙が二人を包み込む。</p>
+        <p>青木はコーヒーの香りに鼻先を突き刺される。舌には無味乾燥さしか広がらなかった。</p>
+
+        <p>「最近気付いたんだけど」と青木が口を開く。「誰も『好き』って言ってない」</p>
+        <p>佐藤は顔色を変えず、淡々と「そうかもしれないね」と答えた。</p>
+        <p>二人の視線が交錯する。しかし何を話せばよいかわからなかった。</p>
+
+        <p>街頭では人々が行き交う。青木は彼らの表情を見て回る。「笑顔もないし、悲しそうな顔もない」</p>
+        <p>佐藤が「そうね」とだけ返す。</p>
+        <p>カフェの外は薄暗くなり始める。遠くで自動車のクラクションが鳴り響いた。</p>
+
+        <p>この街では人々が互いに寄り添おうとする努力さえも見せない。「手を繋ぐ人なんていない」青木は窓ガラスを指差した。</p>
+        <p>「でもそれは昔から変わらないよ」と佐藤。彼女の声には感情の起伏がないように聞こえた。</p>
+
+        <p>二人とも自分の気持ちについて話すことは難しかった。「好き」「愛する」など、表現すること自体が困難な言葉となっていた。青木はコーヒーを一口飲んだ。</p>
+        <p>「君たちはどうやって？　伝える？」</p>
+        <p>佐藤もまたコーヒーを啜る音だけが聞こえた。</p>
+
+        <p>カフェの外では薄闇の中、人々が無表情で歩き続ける。「誰も感情がないように見える」と青木が呟いた。その言葉は彼自身への問いでもあった。</p>
+        <p>「でも、それはただ見えていないかもしれないよ」佐藤もまた淡々とした声色で答えた。</p>
+
+        <p>二人の間には視線だけが行き交うばかりだった。それぞれ隠された感情を読み解こうと試みる。「好き」という言葉は彼らにとって遠いものになっていた。</p>
+        <p>「でも、それは何故？」青木に問いかけるような表情をする佐藤。</p>
+        <p>答えがないことをお互い理解していた。</p>
+
+        <p>カフェの外では薄闇が深まるにつれて人々も消えていく。音楽もなく静寂だけが広がった。「何もかもなくなった」と彼は呟いた。</p>
+        <p>「でも、それはただ変わっただけかもしれないよ」佐藤もまた同じように答えた。</p>
+        <p>二人の視線があらためて交錯する。</p>
+
+        <p>カフェの中では時間ばかりが過ぎていく。人々は何も感じていないわけではないだろうと青木は思う。「何か隠れている」と彼女に問いかけた。</p>
+        <p>「でも、それは見えていないだけかもしれないよ」佐藤の言葉には力強さがあった。</p>
+        <p>その声を聞いて青木は静かに頷いた。</p>
+
+        <p>カフェの中では薄暗い光が二人を包み込む。音楽もなくただ静寂だけが広がっていた。「何もかもなくなった」と彼は呟く。しかし、それは本当だろうか？</p>
+        <p>佐藤の表情には何もないように見えた。</p>
+        <p>青木もまた同じように淡々とした声色で答える。</p>
+
+        <p>カフェの外では人々は何処へと去っていったのか、誰もいない。「好き」という言葉が消えてしまった街は静けさに包まれていた。音楽もなくただ静寂だけが広がっていた。</p>
+        <p>何もかもなくなったわけではないだろうか？</p>
+        <p>青木の視線は遠くへ向かい続ける。</p>
+
+        <p>カフェの中では佐藤と二人で、それぞれ隠された感情を読み解こうとする。「好き」という言葉さえも無駄に思えた。</p>
+        <p>「でもそれはただ見えていないだけかもしれない」彼女が淡々とした声色で答える。</p>
+        <p>青木は静かに頷いた。</p>
+
+        <p>カフェの外では薄暗い光が人々を包み込む。何もかもなくなったわけではないだろうか？</p>
+        <p>しかし、それが本当だろうか？　二人の視線があらためて交錯する。</p>
+        <p> кафеの中でも外でも、何処へと向かうべきなのかわからなかった。</p>
+      </div>
+    </section>
+    <section class="chapter" id="chapter-3">
+      <div class="chapter-header">
+        <span class="chapter-number">第3章</span>
+        <h2 class="chapter-title">音楽と恋愛の連携</h2>
+      </div>
+      
+      <div class="chapter-body">
+        <p>第3章　音楽と恋愛の連携</p>
+
+        <p>朝靄が薄々と街に昇り、日差しがまだ温もりを持っていない。青木は電車の中でラジオをつけた。騒音の中から微かな歌声が漏れ聞こえてくる。「これは何だろう？」彼の目線を追うように、窓ガラス越しの風景が流れる。</p>
+
+        <p>「君は何も知らない」という曲名だけが表示された液晶画面に映る。</p>
+        <p>青木は耳栓を取り出し、音楽が聴こえないようにする。しかし、車内から漏れ出していた歌声で胸を打つ何かがあった。「君と離れて暮らしている」「それでも毎日考える」そう綴られた歌詞は彼の心に戸惑いを感じさせる。</p>
+        <p>青木は何度も耳栓を取り外し、再び塞ぐ動作を繰り返す。その間、人々が降車して新たに乗り込んでいく。</p>
+
+        <p>駅から出てきた青木はカフェに向かう道を通る。「佐藤さんと会う約束だ」と彼の脳裏で自己暗示をかける。</p>
+        <p>店内に入るとすぐに彼女を見つけた。佐藤はコーヒーを飲みながら、手元にある本を開いていた。「ここにいましたね」青木が声をかけた。</p>
+
+        <p>「そうですね。あなたも来たでしょう」</p>
+
+        <p>二人は無言で向かい合う。朝の光が窓から差し込む。</p>
+        <p>「最近ラジオをつけていると不思議な曲ばかりです」と彼女が言った。</p>
+
+        <p>「どんなもの？」</p>
+        <p>佐藤は眉をひそめる。「何もないんです」「恋愛について歌っているものは一つも」</p>
+
+        <p>青木は腕組みをして考え込んだ。「それは意味があるはずです」彼女の顔を見つめ、「音楽と人間の感情、何か関係性が薄れている気がする」と言った。</p>
+
+        <p>佐藤は黙ってコーヒーを一口飲んでから「あなたは何処かで答えを見つけようとしているの？」と言った。</p>
+        <p>青木は視線を落とした。「それはわからない」</p>
+
+        <p>二人の会話が途切れた。カフェの中、誰もが自分のことを考えるだけだという空間があった。</p>
+
+        <p>その後、彼女たちは再び話を続ける気にならなかった。静けさと無言の時間が彼らの間で流れる。青木はラジオから漏れ聞こえる音楽を聞くため電車に乗り直した。</p>
+        <p>しかし同じ曲が繰り返され、「恋」をテーマとするものは見つからない。</p>
+
+        <p>駅には人が行き交っている。「何処へ行くべきかわからない」「それでもここだけの生活を続けている」と青木は彼女のことを思い出していた。人々の声と足音、彼らの心の中から浮き彫りになる何かが虚しく感じられた。</p>
+        <p>遠くで鐘が鳴る。時間や場所を超えて広がっていくような響きだった。</p>
+
+        <p>カフェから見える景色はいつもの通りだ。「誰も『好き』と言わない」という青木の呟きを思い出す彼女は、静かにコーヒー杯を持ち上げた。</p>
+        <p>「それはただ変わっただけかもしれません」それが言葉となり現実となった。しかし、その変化が何であるのか見つけることは難しい。</p>
+
+        <p>時間と共に音楽と恋愛との関係性を探る青木の旅は続く。人々の中でも、彼女たちの中で起こることを眺めるだけだ。</p>
+        <p>窓ガラス越しに見える街並みはいつまでも同じで、しかし中身が変わっていることに気づくためには時間がかかる。</p>
+
+        <p>雨粒がネオンを叩き、音楽と共に流れる都会の夜。青木と佐藤は互いを見つめ合うだけだった。</p>
+        <p>それでも彼ら自身の中に何かを見つけようとしていた。それはきっと誰かにとって答えとなるだろう。</p>
+        <p>街角で響き渡る新たな歌声。「君は何も知らない」それ以外には何も歌われていない。</p>
+
+        <p>最後にカフェを後にした二人の姿が、雨粒とネオン灯りの中で遠ざかる。</p>
+      </div>
+    </section>
+    <section class="chapter" id="chapter-4">
+      <div class="chapter-header">
+        <span class="chapter-number">第4章</span>
+        <h2 class="chapter-title">映画と小説の欠如</h2>
+      </div>
+      
+      <div class="chapter-body">
+        <p>第4章　映画と小説の欠如</p>
+
+        <p>雨が細かく降っていた。湿った空気が路面から立ち上り、街角に薄い霧がかかり始める。青木は傘を開きながら歩道を進む。</p>
+
+        <p>「最近の映画って、何を見ても恋愛に関係ないですよね」という声があちこちで聞かれるようになった。彼も同じように感じていたが、それは特別な何かを見つけたからではなく、ただそのような状況に慣れ始めていた証拠かもしれないと思った。</p>
+
+        <p>青木は大型の映画館に向かい、最新作を見ることを決めた。入口ではレーザーポインターで天井に描かれた星座を指差す子供たちがいる。彼もまた彼らと同じように探していた何かを探そうとしていた。しかし何処を探索しても見つけられなかった。</p>
+
+        <p>映画が始まる少し前に、青木はフードコートのカフェコーナーへと足を運んだ。レジカウンターに並ぶ人々から漂う甘い匂いが彼を包み込む。店員さんがコーヒー豆を入れる音と蒸気が立ち上っている。</p>
+
+        <p>「最近のは何も考えてないですね、この映画もそうかな」と、隣で座っていたおばあさんに耳打ちした。</p>
+        <p>青木は小さく微笑んでから、自分のスープに匙を入れた。「でもね、何かを見逃してるかもしれないですよね」</p>
+        <p>おばあさんは彼の目を見て肯いた。それは一瞬だけだったが、そこには共感があった。</p>
+
+        <p>映画が始まったとき、静寂がホールを包む。</p>
+        <p>「家計簿をつけよう」という字幕が出る。</p>
+        <p>最初は笑い声があちこちから上がった。青木も思わず頬に浮かんだ笑みの端を見つめる。</p>
+
+        <p>スクリーンには、一人の男と女が向かい合って座っている様子が映し出されていた。「この方法を試してみてください」という字幕と共に、二人は家計簿をつけ始めていた。その真剣な表情から、それはただの冗談ではないことが伝わる。</p>
+
+        <p>「本当にこれで良いのか？」と男が尋ねた。</p>
+        <p>女は少し迷ったあと、「やってみましょう」の一言を返しただけだった。「それでも何か変わるわけじゃないでしょう」と彼女の手元を見つめながら呟いた。映画館の中では、静寂が深まるばかりだ。</p>
+
+        <p>青木の心臓には一瞬で冷たい液体が広がったような感覚があった。</p>
+        <p>「これは何だ？」と彼は思わず口に出して尋ねた。「恋愛小説やロマンスを求めていた筈なのに、これだけか」</p>
+        <p>しかし、その答えを見つける前に、映画のプロットはさらに進んでいく。</p>
+
+        <p>男がテーブル上の家計簿を開き、「これは新しい始まりだ」と語り始めた。女性もまた彼に同意し、自分たちを指差しながら「これから先どうなるんだろう？」と尋ねた。</p>
+        <p>青木はその言葉から目を離せないでいた。「何故あんなにも平凡な話がこれ程まで静けさを作ることができるのだろう」と考えていた。</p>
+
+        <p>観客席からは時折咳払いが聞こえてくる。しかし、それは映画館全体に広がる沈黙に対する抗議ではなく、単なる体調不良だった。</p>
+        <p>「でもね、これは何かを伝えている」青木はそう思いながら、スクリーンの向こうで展開される会話を眺めた。「ただの家計簿紹介じゃなくて、何処か深い意味が隠されている」</p>
+
+        <p>映画終了後、彼は外に出て雨粒を受けた。湿った空気が体を包み込むと同時に、街灯から漏れる光が水滴の上を通って反射し始める。</p>
+
+        <p>青木はポケットから携帯を取り出した。「佐藤さん」の名前をタッチする。</p>
+        <p>「もし浮気や恋愛小説がない世界で、我々はどうやって自分たちを見つけるべきか？」と彼女に問うてみた。返信が来るまで時間がかかる。</p>
+
+        <p>空は薄暗く灰色でありながらも遠くから月明かりが僅かな光を放っていた。</p>
+        <p>「青木さん」佐藤の声。「確かに難しい質問ですね、でも答えを見つけ出すのは我々自身です」と彼女は静かに答えた。それは確信というよりも疑問の詰まった言葉だった。</p>
+
+        <p>その返事を受け取った瞬間、青木の中で何かが動き始めた。</p>
+        <p>「僕たちはそれぞれに探し求めてるんだよね」</p>
+        <p>そう呟いた後、彼は再び街灯の光を浴びて進み続けた。雨粒がアスファルトへ落下する音だけが聞こえてきた。</p>
+
+        <p>青木と佐藤との会話は何故かこの一言で終わった。</p>
+        <p>「探し求める」という言葉が心の中で反響し、その答えを見つけるために彼は更なる旅を続けることに決めた。</p>
+      </div>
+    </section>
+    <section class="chapter" id="chapter-5">
+      <div class="chapter-header">
+        <span class="chapter-number">第5章</span>
+        <h2 class="chapter-title">浮気と文学の結びつき</h2>
+      </div>
+      
+      <div class="chapter-body">
+        <p>第5章　浮気と文学の結びつき</p>
+
+        <p>カフェの中、暖炉から立ち上る煙が窓際のカーテンに優しく絡みつく。外では薄曇りで風は冷たく、街灯からの光があたかも雪のように舞い降りているかのような錯覚を起こさせる。コーヒー豆の香ばしい匂いとクラシック音楽が混ざって漂う。</p>
+
+        <p>青木は佐藤に会う約束を取り付けたままカフェで待っていた。暖炉から漏れるわずかな光の中で、彼女の顔を探していた。</p>
+        <p>「お待ちしていましたね」と佐藤が静かに入ってきた。</p>
+        <p>彼女は長めの黒髪を後ろに流し、紺色のブラウスとタイトなチェックパンツを身につけていた。窓ガラスから差込む曇り空の光を見つめるようにして座る。</p>
+
+        <p>「佐藤さん、最近読んだ本について話したいことがあります」と青木は言った。</p>
+        <p>彼女は頷き、クラシック音楽に耳を傾けながらコーヒー杯を持ち上げた。「何ですか？」</p>
+
+        <p>「浮気と恋愛小説の関係性について考えています。もし浮気がなかったら、人々が感情を表現する方法も変わってしまうのでしょうか？」</p>
+        <p>佐藤は小さく息を吐き、「それは深い疑問ですね」と言った。</p>
+        <p>彼女は窓際を見つめながら、少し黙った。「多くの人が忘れているのは、現実とは異なった視点から物語を見る価値があるということです。浮気や愛憎劇がなければ、人々の内面を描写する方法も変わってしまうでしょう」</p>
+
+        <p>「例えば」と彼女は続ける。「過去にあった恋愛小説で主人公たちはしばしばお互いへの愛情と同時に他の誰かに対する感情を持っています。この複雑な関係性から生じる葛藤や迷いが、読者にとっては非常に興味深いものとなることが多いのです」</p>
+
+        <p>青木の視線は彼女の表情を追っていた。「それはつまり？」</p>
+        <p>佐藤は優しく微笑んだ。</p>
+        <p>「浮気があるからこそ、人々の感情表現が豊かになる。そしてそれが文学作品に反映される。もちろん現実と異なるかもしれませんが、それでも物語にはその必要性があります」</p>
+
+        <p>「では」と青木、「もし人々が恋愛小説や映画を全く読まない世界なら？」</p>
+        <p>彼女は考え込んでコーヒーの香りを鼻先で楽しんだ。</p>
+        <p>「それは人々が感情的な表現を見失う可能性がある。しかし、だからこそ我々研究者はそれを探究するべきだと思います」佐藤は青木と視線を交わした。</p>
+
+        <p>外では雪のような風雨に街灯からの光があたかも雪のように舞い落ちているように見え、音楽は静かになった。</p>
+        <p>彼女が続け、「人々の心の中にある何かを探し求める。それは私たちにとって重要な課題です」</p>
+
+        <p>佐藤を見つめながら青木は思考を巡らせていた。「だからこそ、あなたと話すことが大切なんだな」と言った。</p>
+
+        <p>彼女の表情にわずかな驚きが浮かんだ。</p>
+        <p>「そうですね」</p>
+        <p>静寂の中で音楽の旋律だけ聞こえてきた。暖炉から漏れる煙がカーテン越しの曇り空へ向けてゆっくり消えていった。</p>
+        <p>青木はコーヒーを一息吸い、「あなたと話すことで、私自身も大切なことを学ぶことができました」と佐藤に言った。</p>
+
+        <p>彼女は僅かに頷く。「お互いにとって有益な時間になりましたね」</p>
+        <p>窓外の光が曇り空から薄ぼんやりとした雪景色へ変わる。</p>
+        <p>青木は静かな会話を続けた。彼ら自身の感情と、それを表現する方法について深めようと試みる。</p>
+
+        <p>暖炉から漏れる煙と音楽、そして外での微妙な気温変化を背景にしたカフェでの対話が続き、二人は互いへの理解を深めていった。</p>
+        <p>窓からの光が次第に薄暗くなり始めた頃、青木は「佐藤さん」と呼びかけた。「我々の世界で感情的な表現は大事なものですね」</p>
+        <p>彼女は微笑んで、「その通りです。私たち一人ひとりが大切にしていくべき価値があるんです」</p>
+
+        <p>音楽と煙が混じり合い静かなカフェの中を満ち溢れていた。</p>
+        <p>青木が頷き、コーヒー杯を持つ手に力を込めた。「確かに」と言った。</p>
+
+        <p>彼女は再び窓外を見つめ、「人々の内面を描く物語が必要だという意味でね」</p>
+        <p>二人とも黙り込んだ。カフェの中では暖炉から漏れる光だけが静かに揺れ動き、彼らの視線と重なる。</p>
+        <p>天候や音楽は徐々に夜になり深淵へと変化し始める。</p>
+
+        <p>窓外からの風景も薄暗くなり、二人の会話は静寂と共にカフェの中で時間を刻んでいた。青木がコーヒー杯を置き、「ありがとうございました」と言ったときには彼女との対話を通じて自身にも何か大切なものが戻ってきたことを感じていた。</p>
+        <p>佐藤は微笑みながら「またいつでもお話ししましょうね」</p>
+        <p>二人の間には新たな静寂があった。</p>
+
+        <p>カフェの中では暖炉から漏れる煙が薄暗い夜空へと向かって消えていった。</p>
+      </div>
+    </section>
+    <section class="chapter" id="chapter-6">
+      <div class="chapter-header">
+        <span class="chapter-number">第6章</span>
+        <h2 class="chapter-title">忌まわしい過去からの解放</h2>
+      </div>
+      
+      <div class="chapter-body">
+        <p>第6章　忌まわしい過去からの解放</p>
+
+        <p>静寂が部屋に広がり、雨粒の音だけが空間を占めている。窓ガラス一面に張られた水滴は夜空から冷たい光を受け取り、青木和也の視線を反射する。彼の手元ではコーヒーが少しずつ熱さを失い、漂う香りも薄れ始めていた。</p>
+
+        <p>雨粒がアパートの屋根や窓枠に当たる音は小さな鼓動のように聞こえる。部屋の中には湿った空気が流れ込み、古い書籍から発する紙臭さと混ざり合う。青木は何度も深呼吸を繰り返し、自分自身を見つめ直す。</p>
+
+        <p>「佐藤さんとの話…」彼は黒髪をかきあげた。「それがきっかけかもしれない」</p>
+
+        <p>青木の手元にはノートが広げられていた。その上にペンを持つ指先だけ静かで、他全ての感覚は外部からの刺激と戦いながらも呼吸するように音を感じ取る。</p>
+
+        <p>「もし浮気がなければ」</p>
+        <p>彼女の言葉を思い出しながらゆっくりと文字を刻む。「愛する人への表現ができない」</p>
+
+        <p>青木はノートに指先を走らせた。その動きはとてもゆっくりで、一度止まると次の一歩が始まるまで時間がかかるかのようだった。</p>
+
+        <p>「でも…それでも」</p>
+        <p>彼女の言葉一つひとつが心地良い風のように吹き込んでくる。「何があったのか思い出そう」</p>
+
+        <p>青木は深い溜息とともに再びペンを握る。その先端から流れる墨色の線は、雨粒同様に彼自身の思考や感情を探求するための新たな水滴となった。</p>
+
+        <p>「忌まわしい過去」</p>
+        <p>文字が並ぶたびに、遠くで雷鳴が響き始める。部屋の中では静けさと闘いながらも、青木は自らを理解するために手探りで前進していく。「それが自分の成長の過程」</p>
+
+        <p>彼の視線は時折空に向かって上がり、またすぐにノートに戻る。</p>
+
+        <p>「だからこそ…」</p>
+        <p>言葉が途切れる度に黒髪が揺れ動き、「解放」という単語を胸の中に深めていく。青木は再び雨粒から目を離し、自分の記録を見つめ直した。「過去と向き合うことで未来へ」</p>
+
+        <p>彼の手元では新たなページが始まり、その上に新しい文字が刻まれていく。それぞれが一つずつの小さな出来事となり、それらが次第に物語となる。</p>
+
+        <p>雨はいつしか勢いを増し、静寂の中で咆哮のように鳴り響く。「過去からの解放」青木の心の中では新たな感情や思考が芽生えていた。「それが恋愛小説における大切な要素」</p>
+
+        <p>彼の手元からは止まることなく文字が生まれ続けた。雨粒もまた同じ速度で地面に降り注いでいく。</p>
+
+        <p>「もし浮気がなければ…」</p>
+        <p>その言葉を再び口にする度、青木は深呼吸し、「未来へ進む道筋」を感じ始める。「愛への表現」</p>
+
+        <p>部屋の壁には湿気から黒ずんだ小さな滴が付着していた。それらが雨粒とともに流れるように、青木自身もまた過去からの解放に向けて新たな一歩を踏み出す。</p>
+
+        <p>「…だからこそ」と彼は静かに呟いた。</p>
+        <p>終わり。</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>もし浮気がなければ恋愛小説はなかった</p>
+    <p>Generated locally with Ollama + Stable Diffusion</p>
+  </footer>
+
+
+  <button class="tts-fab" id="ttsFab" onclick="ttsToggle()" title="Read aloud">
+    <span id="ttsFabIcon">&#x1f50a;</span>
+  </button>
+  <div class="tts-bar" id="ttsBar">
+    <button onclick="ttsPause()" id="ttsPauseBtn">&#x23f8;</button>
+    <button onclick="ttsStop()">&#x23f9;</button>
+    <button onclick="ttsPrev()">&#x23ee;</button>
+    <button onclick="ttsNext()">&#x23ed;</button>
+    <span class="tts-info" id="ttsInfo">Ready</span>
+    <span class="tts-speed">
+      <input type="range" id="ttsSpeed" min="0.5" max="2.0" step="0.1"
+             value="1.0" onchange="ttsSetSpeed(this.value)" />
+      <span id="ttsSpeedVal">1.0x</span>
+    </span>
+  </div>
+
+  <button class="mode-toggle" onclick="toggleMode()">🌗 表示切替</button>
+
+  <script>
+    // Reading mode
+    function toggleMode() {
+      document.body.classList.toggle('light');
+      localStorage.setItem('mode', document.body.classList.contains('light') ? 'light' : 'dark');
+    }
+    if (localStorage.getItem('mode') === 'light') document.body.classList.add('light');
+
+    // Scroll progress
+    window.addEventListener('scroll', () => {
+      const h = document.documentElement;
+      const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+      document.getElementById('progress').style.width = pct + '%';
+    });
+
+    // === TTS (Web Speech API) ===
+    const synth = window.speechSynthesis;
+    let ttsChs = [], ttsI = 0, ttsRate = 1.0, ttsOn = false, ttsPd = false;
+
+    document.querySelectorAll('.chapter').forEach((sec, i) => {
+      const b = sec.querySelector('.chapter-body');
+      const t = sec.querySelector('.chapter-title');
+      if (b) ttsChs.push({
+        title: t ? t.textContent : ('Ch.' + (i+1)),
+        text: b.textContent.trim(), el: sec
+      });
+    });
+
+    function ttsToggle() {
+      if (!synth) { alert('Speech not supported'); return; }
+      if (ttsOn) { ttsStop(); return; }
+      const sy = window.scrollY + window.innerHeight / 3;
+      let cl = 0;
+      ttsChs.forEach((c, i) => { if (c.el.offsetTop <= sy) cl = i; });
+      ttsI = cl; ttsOn = true; ttsPd = false;
+      document.getElementById('ttsFab').classList.add('speaking');
+      document.getElementById('ttsFabIcon').innerHTML = '&#x23f9;';
+      document.getElementById('ttsBar').classList.add('active');
+      _ttsRead();
+    }
+
+    function _ttsRead() {
+      if (ttsI >= ttsChs.length) { ttsStop(); return; }
+      synth.cancel();
+      const ch = ttsChs[ttsI];
+      document.getElementById('ttsInfo').textContent = ch.title;
+      ch.el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Split by Japanese sentence endings for reliable playback
+      const sents = ch.text.match(/[^。！？
+]+[。！？]?/g) || [ch.text];
+      let si = 0;
+
+      function next() {
+        if (!ttsOn) return;
+        if (si >= sents.length) {
+          ttsI++;
+          if (ttsI < ttsChs.length) setTimeout(_ttsRead, 800);
+          else ttsStop();
+          return;
+        }
+        const u = new SpeechSynthesisUtterance(sents[si].trim());
+        u.lang = 'ja-JP'; u.rate = ttsRate;
+        const vs = synth.getVoices();
+        const jv = vs.find(v => v.lang && v.lang.startsWith('ja'));
+        if (jv) u.voice = jv;
+        u.onend = () => { si++; next(); };
+        u.onerror = () => { si++; next(); };
+        synth.speak(u);
+      }
+      next();
+    }
+
+    function ttsPause() {
+      if (!ttsOn) return;
+      if (ttsPd) {
+        synth.resume(); ttsPd = false;
+        document.getElementById('ttsPauseBtn').innerHTML = '&#x23f8;';
+      } else {
+        synth.pause(); ttsPd = true;
+        document.getElementById('ttsPauseBtn').innerHTML = '&#x25b6;';
+      }
+    }
+
+    function ttsStop() {
+      synth.cancel(); ttsOn = false; ttsPd = false;
+      document.getElementById('ttsFab').classList.remove('speaking');
+      document.getElementById('ttsFabIcon').innerHTML = '&#x1f50a;';
+      document.getElementById('ttsBar').classList.remove('active');
+      document.getElementById('ttsInfo').textContent = 'Ready';
+      document.getElementById('ttsPauseBtn').innerHTML = '&#x23f8;';
+    }
+
+    function ttsNext() { if (ttsOn && ttsI < ttsChs.length - 1) { ttsI++; _ttsRead(); } }
+    function ttsPrev() { if (ttsOn && ttsI > 0) { ttsI--; _ttsRead(); } }
+    function ttsSetSpeed(v) {
+      ttsRate = parseFloat(v);
+      document.getElementById('ttsSpeedVal').textContent = v + 'x';
+    }
+    if (synth) synth.onvoiceschanged = () => synth.getVoices();
+
+    /* ─── Carousel ─── */
+    (function() {
+      const track = document.getElementById('carouselTrack');
+      if (!track) return;
+      const dots = track.parentElement.querySelectorAll('.carousel-dot');
+      const slides = track.querySelectorAll('.carousel-slide');
+      if (slides.length < 1) return;
+      function updateDots() {
+        const sw = slides[0].offsetWidth + 14;
+        const idx = Math.round(track.scrollLeft / sw);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+      track.addEventListener('scroll', updateDots, { passive: true });
+      dots.forEach(d => d.addEventListener('click', () => {
+        const sw = slides[0].offsetWidth + 14;
+        track.scrollTo({ left: parseInt(d.dataset.idx) * sw, behavior: 'smooth' });
+      }));
+      let paused = false, timer = setInterval(() => {
+        if (paused) return;
+        const sw = slides[0].offsetWidth + 14;
+        const mx = track.scrollWidth - track.clientWidth;
+        const nx = track.scrollLeft + sw;
+        track.scrollTo({ left: nx > mx ? 0 : nx, behavior: 'smooth' });
+      }, 4000);
+      track.addEventListener('touchstart', () => { paused = true; clearInterval(timer); }, { passive: true });
+      track.addEventListener('touchend', () => {
+        paused = false;
+        timer = setInterval(() => {
+          if (paused) return;
+          const sw = slides[0].offsetWidth + 14;
+          const mx = track.scrollWidth - track.clientWidth;
+          const nx = track.scrollLeft + sw;
+          track.scrollTo({ left: nx > mx ? 0 : nx, behavior: 'smooth' });
+        }, 4000);
+      }, { passive: true });
+    })();
+
+  </script>
+</body>
+</html>
